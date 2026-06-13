@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './lib/supabaseClient'
 import type { User } from '@supabase/supabase-js'
-import { Login, Dashboard } from './pages'
+import { Login, Dashboard , SprintBoard } from './pages'
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -38,6 +38,10 @@ function App() {
         <Route
           path='/dashboard'
           element={user ? <div><Dashboard /></div> : <Navigate to="/login" />}
+        />
+        <Route
+          path='/sprintboard'
+          element={user ? <div><SprintBoard /></div> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>

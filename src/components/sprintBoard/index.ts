@@ -1,0 +1,6 @@
+export {default as KanbanBoard} from './KanbanBoard'
+export {default as ProjectModal} from './ProjectModal'
+export {default as ProjectsPanel} from './ProjectsPanel'
+export {default as TaskCard} from './TaskCard'
+export {default as TaskModal} from './TaskModal'
+export {default as ConfirmModal} from './ConfirmModal'
