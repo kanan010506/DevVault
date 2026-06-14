@@ -1,3 +1,4 @@
 export {default as Login}  from './Login'
 export {default as Dashboard}  from './Dashboard'
 export {default as SprintBoard} from './SprintBoard'
+export {default as MockMate} from './MockMate'
