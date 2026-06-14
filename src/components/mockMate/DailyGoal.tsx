@@ -1,10 +1,4 @@
-import type { DailyGoal as DailyGoalType } from './types'
-
-interface TodayCount {
-  easy: number
-  medium: number
-  hard: number
-}
+import type { DailyGoal as DailyGoalType , TodayCount} from './types'
 
 interface Props {
   goal: DailyGoalType | null

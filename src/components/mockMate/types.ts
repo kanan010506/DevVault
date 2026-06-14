@@ -90,3 +90,9 @@ export interface Problem {
   pinned: boolean
   created_at: string
 }
+
+export interface TodayCount {
+  easy: number
+  medium: number
+  hard: number
+}

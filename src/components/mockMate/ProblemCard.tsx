@@ -1,4 +1,5 @@
 import type { Problem } from './types'
+import {getStatusColor, getDaysOverdue, getLastReviewed} from './utils.ts'
 
 interface Props {
   problem: Problem
@@ -10,30 +11,6 @@ interface Props {
   selectMode?: boolean
   isSelected?: boolean
   onToggleSelect?: (id: string) => void
-}
-
-function getStatusColor(status: string) {
-  if (status === 'failed') return 'status-failed'
-  if (status === 'revisiting') return 'status-revisiting'
-  return 'status-mastered'
-}
-
-function getDaysOverdue(nextReviewDate: string): number {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const due = new Date(nextReviewDate)
-  due.setHours(0, 0, 0, 0)
-  return Math.floor((today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24))
-}
-
-function getLastReviewed(lastReviewedAt: string | null): string {
-  if (!lastReviewedAt) return 'Never reviewed'
-  const today = new Date()
-  const last = new Date(lastReviewedAt)
-  const days = Math.floor((today.getTime() - last.getTime()) / (1000 * 60 * 60 * 24))
-  if (days === 0) return 'Reviewed today'
-  if (days === 1) return 'Reviewed yesterday'
-  return `Reviewed ${days} days ago`
 }
 
 function ProblemCard({ problem, onEdit, onDelete, onReview, onTogglePin, onReset , selectMode, isSelected, onToggleSelect}: Props) {

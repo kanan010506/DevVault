@@ -1,5 +1,6 @@
 import { Draggable } from '@hello-pangea/dnd'
 import type { Task } from './types'
+import {getDateHighlight} from './utils.ts'
 
 interface Props {
   task: Task
@@ -9,18 +10,6 @@ interface Props {
   onComplete: (task: Task) => void
   onTagClick: (tag: string) => void
   activeTag: string | null
-}
-
-function getDateHighlight(task: Task): string {
-  if (!task.due_date) return ''
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const due = new Date(task.due_date)
-  due.setHours(0, 0, 0, 0)
-  if (task.status === 'done') return 'task-completed'
-  if (due < today) return 'task-overdue'
-  if (due.getTime() === today.getTime()) return 'task-due-today'
-  return 'task-on-track'
 }
 
 function TaskCard({ task, index, onEdit, onDelete, onComplete, onTagClick, activeTag }: Props) {

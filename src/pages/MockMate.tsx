@@ -2,15 +2,9 @@ import { useEffect, useState } from 'react'
 import confetti from 'canvas-confetti'
 import { supabase } from '../lib/supabaseClient'
 import { Layout } from '../components/common'
-import {
-  ProblemCard,
-  ProblemModal,
-  FlashcardReview,
-  DailyGoal,
-  CategoryProgress,
-  MockMateSettings,
-} from '../components/mockMate'
+import { ProblemCard, ProblemModal, FlashcardReview, DailyGoal, CategoryProgress, MockMateSettings } from '../components/mockMate'
 import type { Problem, DailyGoal as DailyGoalType, MockMateSettings as SettingsType } from '../components/mockMate/types'
+import {getLocalDateString, getStreak, getTodayCount, getDueProblems} from '../components/mockMate/utils.ts'
 import '../styles/mockmate.css'
 
 type SortOption = 'overdue' | 'problem_number' | 'difficulty' | 'confidence' | 'date'
@@ -32,70 +26,6 @@ const DEFAULT_GOAL: DailyGoalType = {
   easy_target: 0,
   medium_target: 0,
   hard_target: 0,
-}
-
-function getLocalDateString(date: Date = new Date()): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
-function isSameLocalDay(isoString: string, dateStr: string): boolean {
-  return getLocalDateString(new Date(isoString)) === dateStr
-}
-
-function getStreak(problems: Problem[], goal: DailyGoalType): number {
-  if (problems.length === 0) return 0
-  const hasGoal = goal.easy_target > 0 || goal.medium_target > 0 || goal.hard_target > 0
-
-  let streak = 0
-  const checkDate = new Date()
-
-  while (true) {
-    const dateStr = getLocalDateString(checkDate)
-    const dayProblems = problems.filter(p => isSameLocalDay(p.created_at, dateStr))
-
-    if (hasGoal) {
-      const easyCount = dayProblems.filter(p => p.difficulty === 'easy').length
-      const mediumCount = dayProblems.filter(p => p.difficulty === 'medium').length
-      const hardCount = dayProblems.filter(p => p.difficulty === 'hard').length
-
-      const goalMet =
-        easyCount >= goal.easy_target &&
-        mediumCount >= goal.medium_target &&
-        hardCount >= goal.hard_target
-
-      if (!goalMet) break
-    } else {
-      if (dayProblems.length === 0) break
-    }
-
-    streak++
-    checkDate.setDate(checkDate.getDate() - 1)
-  }
-  return streak
-}
-
-function getTodayCount(problems: Problem[]) {
-  const today = getLocalDateString()
-  const todayProblems = problems.filter(p => isSameLocalDay(p.created_at, today))
-  return {
-    easy: todayProblems.filter(p => p.difficulty === 'easy').length,
-    medium: todayProblems.filter(p => p.difficulty === 'medium').length,
-    hard: todayProblems.filter(p => p.difficulty === 'hard').length,
-  }
-}
-
-function getDueProblems(problems: Problem[]): Problem[] {
-  const today = getLocalDateString()
-  return problems
-    .filter(p => p.next_review_date <= today)
-    .sort((a, b) => {
-      const aDays = new Date(today).getTime() - new Date(a.next_review_date).getTime()
-      const bDays = new Date(today).getTime() - new Date(b.next_review_date).getTime()
-      return bDays - aDays
-    })
 }
 
 function MockMate() {

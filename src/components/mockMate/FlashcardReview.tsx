@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Problem, MockMateSettings } from './types'
 import { LANGUAGES } from './types'
+import {addDays} from './utils.ts'
 
 interface Props {
   problems: Problem[]
@@ -8,12 +9,6 @@ interface Props {
   onComplete: (problemId: string, newDate: string, newStatus: Problem['status']) => void
   onExit: () => void
   onUpdateProblem: (problemId: string, notes: string, solution: string, solutionLanguage: string) => void
-}
-
-function addDays(days: number): string {
-  const date = new Date()
-  date.setDate(date.getDate() + days)
-  return date.toISOString().split('T')[0]
 }
 
 function FlashcardReview({ problems, settings, onComplete, onExit, onUpdateProblem }: Props) {

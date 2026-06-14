@@ -4,6 +4,7 @@ import type { DropResult } from '@hello-pangea/dnd'
 import TaskCard from './TaskCard'
 import type { Task, Project } from './types'
 import { COLUMNS } from './types'
+import {sortTasks} from './utils.ts'
 
 type SortOption = 'due_date' | 'priority'
 
@@ -15,25 +16,6 @@ interface Props {
   onEditTask: (task: Task) => void
   onDeleteTask: (taskId: string) => void
   onCompleteTask: (task: Task) => void
-}
-
-const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 }
-
-function sortTasks(tasks: Task[], sort: SortOption): Task[] {
-  if (sort === 'priority') {
-    return [...tasks].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority])
-  }
-  if (sort === 'due_date') {
-    return [...tasks].sort((a, b) => {
-      if (!a.due_date && !b.due_date) return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
-      if (!a.due_date) return 1
-      if (!b.due_date) return -1
-      const dateDiff = new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
-      if (dateDiff !== 0) return dateDiff
-      return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
-    })
-  }
-  return tasks
 }
 
 function KanbanBoard({ selectedProject, tasks, onDragEnd, onAddTask, onEditTask, onDeleteTask, onCompleteTask }: Props) {
