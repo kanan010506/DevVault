@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './lib/supabaseClient'
 import type { User } from '@supabase/supabase-js'
-import { Login, Dashboard , SprintBoard, MockMate } from './pages'
+import { Login, Dashboard , SprintBoard, MockMate, BugVault } from './pages'
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -46,6 +46,10 @@ function App() {
         <Route 
           path='/mockmate' 
           element={user ? <div><MockMate /></div> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path='/bugvault' 
+          element={user ? <BugVault /> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>
