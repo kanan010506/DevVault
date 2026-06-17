@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 import type { DropResult } from '@hello-pangea/dnd'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { Layout, ConfirmModal} from '../components/common'
 import { KanbanBoard, ProjectModal, ProjectsPanel, TaskModal } from '../components/sprintBoard'
@@ -13,6 +14,7 @@ interface TaskCount {
 }
 
 function SprintBoard() {
+  const [searchParams] = useSearchParams()
   const [projects, setProjects] = useState<Project[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
@@ -23,6 +25,7 @@ function SprintBoard() {
   const [taskCounts, setTaskCounts] = useState<Record<string, TaskCount>>({})
   const [confirmTask, setConfirmTask] = useState<string | null>(null)
   const [confirmProject, setConfirmProject] = useState<string | null>(null)
+  const handledTaskLink = useRef(false)
 
 
   const fetchAllTaskCounts = async (projectList: Project[]) => {
@@ -51,10 +54,16 @@ function SprintBoard() {
       if (data) {
         setProjects(data)
         fetchAllTaskCounts(data)
+
+        const projectId = searchParams.get('project')
+        if (projectId) {
+          const found = data.find(p => p.id === projectId)
+          if (found) setSelectedProject(found)
+        }
       }
     }
     fetchProjects()
-  }, [])
+  }, [searchParams])
 
   useEffect(() => {
     const fetchTasks = async (projectId: string) => {
@@ -67,6 +76,17 @@ function SprintBoard() {
     }
     if (selectedProject) fetchTasks(selectedProject.id)
   }, [selectedProject])
+
+  useEffect(() => {
+    if (!selectedProject) return
+    if (handledTaskLink.current) return
+    const taskId = searchParams.get('task')
+    if (!taskId) return
+    const found = tasks.find(t => t.id === taskId)
+    if (!found) return
+    handledTaskLink.current = true
+    setEditingTask(found)
+  }, [tasks, selectedProject, searchParams])
 
 
   const triggerConfetti = () => {

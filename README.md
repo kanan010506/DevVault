@@ -16,6 +16,7 @@ DevVault is a self-contained, full-stack productivity portal built for personal 
 - Tag and priority filtering, due-date and priority sorting
 - Pin, edit, duplicate-safe bulk actions, and confirm-before-delete dialogs
 - Confetti celebration when a project hits 100% completion
+- Due-today banner visible on the Dashboard so you never miss a deadline without opening SprintBoard
 
 ### 🧠 MockMate — LeetCode Spaced Repetition Tracker
 - Log problems with auto-filled title/number from a pasted LeetCode URL
@@ -24,18 +25,30 @@ DevVault is a self-contained, full-stack productivity portal built for personal 
 - Daily goals (Easy/Medium/Hard targets) with goal-based streak tracking
 - Full-screen flashcard review mode with inline note/solution editing
 - Category progress breakdown, pin/reset/bulk status actions, multi-filter library view
+- All-time best-streak tracking — your record is preserved and displayed even after the current streak resets
 
 ### 🐛 BugVault — Personal Bug Diary
 - Log bugs with error message, cause, fix, and a language-tagged code snippet
 - Automatic language detection from pasted error messages
 - "Saw this again" hit-count tracking to surface your most recurring issues
 - Collapsible cards, one-click fix copying, and full-text search across title/error/tags
+- Related bugs linking — tag any bug as related to one or more other bugs; links render as clickable chips on the card for fast cross-referencing
 
 ### 📝 TechNotes — Markdown Knowledge Base
 - Category-organized notes with text/code note types
 - Live markdown preview with GitHub-flavored markdown and syntax-highlighted code blocks
 - Debounced auto-save, recently-viewed tracking, and one-click `.md` export
 - Pinning, tagging, and full-text search across all notes
+- Wiki-style note linking — type `[[Note Title]]` anywhere in a note; it renders as a styled internal link in preview mode and navigates directly to that note on click; unresolved titles are highlighted so you can spot broken links
+
+### 🔎 Global Search
+- Instant cross-tool search accessible from the sidebar or with **⌘/Ctrl + K** from anywhere in the app
+- Searches SprintBoard tasks, MockMate problems, BugVault bugs, and TechNotes notes simultaneously
+- Results are grouped by tool and deep-link directly to the matching item
+
+### 🏠 Dashboard
+- Live mini-stats per tool: active task count and due-today count for SprintBoard; due count and current + all-time best streak for MockMate; total bugs logged; total notes
+- Due-today banner surfaces upcoming SprintBoard deadlines without leaving the Dashboard
 
 ---
 
@@ -120,7 +133,7 @@ No external LeetCode, GitHub, or third-party APIs are called for data fetching. 
 
 ## 📌 Status
 
-All four core tools — SprintBoard, MockMate, BugVault, and TechNotes — are fully implemented and actively used as a personal daily-driver productivity suite.
+All four core tools — SprintBoard, MockMate, BugVault, and TechNotes — are fully implemented and actively used as a personal daily-driver productivity suite. Recent additions include a cross-tool global search, live Dashboard stats, a due-today banner, MockMate best-streak tracking, BugVault related-bug linking, and TechNotes wiki-style `[[Note Title]]` linking.
 
 ---
 

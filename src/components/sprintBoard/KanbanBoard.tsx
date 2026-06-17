@@ -35,6 +35,16 @@ function KanbanBoard({ selectedProject, tasks, onDragEnd, onAddTask, onEditTask,
     return due < today
   })
 
+  const todayStr = (() => {
+    const d = new Date()
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  })()
+
+  const dueTodayTasks = tasks.filter(t => t.status !== 'done' && t.due_date === todayStr)
+
   const getTasksByStatus = (status: string) => {
     const filtered = tasks.filter(t => {
       const matchesStatus = t.status === status
@@ -106,6 +116,12 @@ function KanbanBoard({ selectedProject, tasks, onDragEnd, onAddTask, onEditTask,
       {overdueTasks.length > 0 && (
         <div className="overdue-banner">
           ⚠️ {overdueTasks.length} task{overdueTasks.length > 1 ? 's are' : ' is'} overdue in this project
+        </div>
+      )}
+
+      {dueTodayTasks.length > 0 && (
+        <div className="due-today-banner">
+          ⏰ {dueTodayTasks.length} task{dueTodayTasks.length > 1 ? 's are' : ' is'} due today in this project
         </div>
       )}
 

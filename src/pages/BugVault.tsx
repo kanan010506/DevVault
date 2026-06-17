@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { Layout, ConfirmModal } from '../components/common'
 import { BugCard, BugModal } from '../components/bugVault'
@@ -7,12 +8,15 @@ import '../styles/bugvault.css'
 import '../styles/mockmate.css'
 
 function BugVault() {
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [bugs, setBugs] = useState<Bug[]>([])
   const [showModal, setShowModal] = useState(false)
   const [editingBug, setEditingBug] = useState<Bug | null>(null)
   const [search, setSearch] = useState('')
   const [filterLanguage, setFilterLanguage] = useState('all')
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [expandedBugId, setExpandedBugId] = useState<string | null>(null)
 
 
   useEffect(() => {
@@ -29,6 +33,15 @@ function BugVault() {
 
     fetchBugs()
   }, [])
+
+  useEffect(() => {
+    const id = searchParams.get('bug')
+    if (!id) return
+    setExpandedBugId(id)
+    setTimeout(() => {
+      document.getElementById(`bug-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 50)
+  }, [searchParams])
 
   const handleAddBug = async (bug: Partial<Bug>) => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -73,6 +86,22 @@ function BugVault() {
     const matchesLanguage = filterLanguage === 'all' || b.language === filterLanguage
     return matchesSearch && matchesLanguage
   })
+
+  const relatedById = (bug: Bug) => {
+    const ids = bug.related_bug_ids || []
+    const map = new Map(bugs.map(b => [b.id, b.title]))
+    return ids
+      .filter(id => map.has(id))
+      .map(id => ({ id, title: map.get(id)! }))
+  }
+
+  const navigateToBug = (id: string) => {
+    setExpandedBugId(id)
+    navigate(`/bugvault?bug=${id}`)
+    setTimeout(() => {
+      document.getElementById(`bug-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 50)
+  }
 
   return (
     <Layout>
@@ -124,7 +153,7 @@ function BugVault() {
 
         <div className="problem-list">
           {filteredBugs.length === 0 ? (
-            <p className="mm-empty">
+            <p className="mm-empty mm-empty-state">
               {bugs.length === 0 ? 'No bugs logged yet. Log your first bug!' : 'No bugs match your search.'}
             </p>
           ) : (
@@ -132,9 +161,13 @@ function BugVault() {
               <BugCard
                 key={bug.id}
                 bug={bug}
+                expanded={expandedBugId === bug.id}
+                onToggleExpand={() => setExpandedBugId(prev => prev === bug.id ? null : bug.id)}
                 onEdit={setEditingBug}
                 onDelete={(id) => setConfirmDelete(id)}
                 onSawAgain={handleSawAgain}
+                relatedBugs={relatedById(bug)}
+                onNavigateToBug={navigateToBug}
               />
             ))
           )}
@@ -146,6 +179,7 @@ function BugVault() {
           onClose={() => { setShowModal(false); setEditingBug(null) }}
           onSave={editingBug ? handleEditBug : handleAddBug}
           editBug={editingBug}
+          allBugs={bugs}
         />
       )}
       {confirmDelete && (

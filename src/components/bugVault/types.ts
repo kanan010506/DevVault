@@ -16,6 +16,7 @@ export interface Bug {
   code_snippet: string | null
   code_language: string
   tags: string[]
+  related_bug_ids: string[]
   hit_count: number
   last_seen_at: string
   created_at: string

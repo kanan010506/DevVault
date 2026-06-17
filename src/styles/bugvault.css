@@ -17,24 +17,28 @@
 .bv-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #f9fafb;
+  color: var(--text);
+  letter-spacing: -0.01em;
 }
 
 /* ── Bug Card ── */
 .bug-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 1rem;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) ease, border-color var(--dur-2) ease, background-color var(--dur-2) ease;
 }
 
 .bug-card:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .bug-card-header {
@@ -54,7 +58,7 @@
 .bug-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--text);
 }
 
 .bug-language {
@@ -100,27 +104,27 @@
   flex-direction: column;
   gap: 0.4rem;
   font-size: 0.85rem;
-  color: #d1d5db;
+  color: var(--text-2);
   line-height: 1.6;
 }
 
 .bug-fix-label {
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--muted);
 }
 
 .bug-code-details {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 0.6rem;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-md);
   padding: 0.6rem 0.85rem;
 }
 
 .bug-code-details summary {
   cursor: pointer;
   font-size: 0.8rem;
-  color: #6b7280;
-  transition: color 0.2s ease;
+  color: var(--muted-2);
+  transition: color var(--dur-2) ease;
 }
 
 .bug-code-details summary:hover {
@@ -151,7 +155,7 @@
 
 .bug-last-seen {
   font-size: 0.75rem;
-  color: #4b5563;
+  color: var(--muted-3);
 }
 
 .bug-saw-again-btn {
@@ -163,24 +167,31 @@
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2) ease, background-color var(--dur-2) ease, box-shadow var(--dur-2) ease;
 }
 
 .bug-saw-again-btn:hover {
   background: rgba(167, 139, 250, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(124, 58, 237, 0.12);
+}
+
+.bug-saw-again-btn:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .bug-frequent-widget {
   background: rgba(167, 139, 250, 0.04);
   border: 1px solid rgba(167, 139, 250, 0.15);
-  border-radius: 1rem;
+  border-radius: var(--radius-xl);
   padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .bug-frequent-widget h3 {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--text);
   margin-bottom: 0.75rem;
 }
 
@@ -196,12 +207,12 @@
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 0.6rem;
+  border-radius: var(--radius-md);
 }
 
 .bug-frequent-title {
   font-size: 0.85rem;
-  color: #e5e7eb;
+  color: var(--text-2);
 }
 
 .bug-frequent-count {
@@ -217,9 +228,9 @@
 
 .bug-expand-icon {
   font-size: 0.7rem;
-  color: #6b7280;
+  color: var(--muted-2);
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-2) var(--ease-out);
 }
 
 .bug-card.expanded {
@@ -231,4 +242,49 @@
   color: #a78bfa;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* ── Related Bugs ── */
+.bug-related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.bug-related-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted-2);
+  flex-shrink: 0;
+}
+
+.bug-related-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.bug-related-link {
+  background: rgba(96, 165, 250, 0.08);
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  color: #60a5fa;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) ease, border-color var(--dur-2) ease, box-shadow var(--dur-2) ease;
+  white-space: nowrap;
+}
+
+.bug-related-link:hover {
+  background: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
+}
+
+.bug-related-link:active {
+  transform: translateY(0) scale(0.98);
 }

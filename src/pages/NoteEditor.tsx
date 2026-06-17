@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -7,6 +7,24 @@ import { Layout } from '../components/common'
 import { CodeBlock } from '../components/techNotes'
 import type { Note } from '../components/techNotes/types'
 import '../styles/technotes.css'
+
+// Converts [[Note Title]] tokens into standard markdown links so ReactMarkdown
+// can render them. Links that resolve to a known note get the path
+// /technotes/<id>; unresolved links get the special path wiki://unresolved so
+// the anchor renderer can style them differently.
+function applyWikiLinks(
+  text: string,
+  titleToId: Map<string, string>,
+): string {
+  return text.replace(/\[\[([^\]]+)\]\]/g, (_match, rawTitle: string) => {
+    const title = rawTitle.trim()
+    const noteId = titleToId.get(title.toLowerCase())
+    if (noteId) {
+      return `[${title}](/technotes/${noteId})`
+    }
+    return `[${title}](wiki://unresolved)`
+  })
+}
 
 function NoteEditor() {
   const { id } = useParams()
@@ -18,6 +36,8 @@ function NoteEditor() {
   const [mode, setMode] = useState<'edit' | 'preview'>('edit')
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'idle'>('idle')
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Lightweight index of all notes: title (lowercased) → id
+  const [titleToId, setTitleToId] = useState<Map<string, string>>(new Map())
 
   useEffect(() => {
     const fetchNote = async () => {
@@ -38,6 +58,32 @@ function NoteEditor() {
     }
     fetchNote()
   }, [id])
+
+  // Fetch all note titles for wiki-link resolution (exclude current note from
+  // the navigation index — it can still be referenced, just won't self-link).
+  useEffect(() => {
+    const fetchAllTitles = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data } = await supabase
+        .from('notes')
+        .select('id,title')
+        .eq('user_id', user.id)
+      if (!data) return
+      const map = new Map<string, string>()
+      data.forEach((n: { id: string; title: string }) => {
+        map.set(n.title.trim().toLowerCase(), n.id)
+      })
+      setTitleToId(map)
+    }
+    fetchAllTitles()
+  }, [])
+
+  // Pre-processed content with [[Title]] → markdown links substituted
+  const processedContent = useMemo(
+    () => applyWikiLinks(content, titleToId),
+    [content, titleToId],
+  )
 
   const saveNote = useCallback(async (newTitle: string, newContent: string, newTags: string[]) => {
     if (!id) return
@@ -145,6 +191,32 @@ function NoteEditor() {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
+                // Handle internal wiki-links and external links uniformly
+                a({ href, children, ...props }) {
+                  if (href?.startsWith('/technotes/')) {
+                    return (
+                      <button
+                        className="tn-wiki-link"
+                        onClick={() => navigate(href)}
+                        title={`Open note: ${String(children)}`}
+                      >
+                        🔗 {children}
+                      </button>
+                    )
+                  }
+                  if (href === 'wiki://unresolved') {
+                    return (
+                      <span className="tn-wiki-link tn-wiki-link--missing" title="No note with this title found">
+                        [[{children}]]
+                      </span>
+                    )
+                  }
+                  return (
+                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                      {children}
+                    </a>
+                  )
+                },
                 code({ className, children, ...props }) {
                   const match = /language-(\w+)/.exec(className || '')
                   const isInline = !match
@@ -157,10 +229,10 @@ function NoteEditor() {
                       value={String(children).replace(/\n$/, '')}
                     />
                   )
-                }
+                },
               }}
             >
-              {content || '*Nothing to preview yet. Start writing!*'}
+              {processedContent || '*Nothing to preview yet. Start writing!*'}
             </ReactMarkdown>
           </div>
         )}

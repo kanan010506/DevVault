@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { Layout } from '../components/common'
 import { ProblemCard, ProblemModal, FlashcardReview, DailyGoal, CategoryProgress, MockMateSettings } from '../components/mockMate'
@@ -18,6 +19,7 @@ const DEFAULT_SETTINGS: SettingsType = {
   revisiting_interval: 3,
   mastered_interval: 7,
   preferred_language: 'Python3',
+  best_streak: 0,
 }
 
 const DEFAULT_GOAL: DailyGoalType = {
@@ -29,6 +31,7 @@ const DEFAULT_GOAL: DailyGoalType = {
 }
 
 function MockMate() {
+  const [searchParams] = useSearchParams()
   const [problems, setProblems] = useState<Problem[]>([])
   const [goal, setGoal] = useState<DailyGoalType>(DEFAULT_GOAL)
   const [settings, setSettings] = useState<SettingsType>(DEFAULT_SETTINGS)
@@ -47,6 +50,7 @@ function MockMate() {
   const [showReviewPrompt, setShowReviewPrompt] = useState(false)
   const [selectMode, setSelectMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const handledProblemLink = useRef(false)
 
   const toggleSelect = (id: string) => {
     setSelectedIds(prev => {
@@ -88,8 +92,8 @@ function MockMate() {
       const [{ data: problemsData }, { data: goalData }, { data: settingsData }] =
         await Promise.all([
           supabase.from('problems').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-          supabase.from('daily_goals').select('*').eq('user_id', user.id).single(),
-          supabase.from('mockmate_settings').select('*').eq('user_id', user.id).single(),
+          supabase.from('daily_goals').select('*').eq('user_id', user.id).maybeSingle(),
+          supabase.from('mockmate_settings').select('*').eq('user_id', user.id).maybeSingle(),
         ])
 
       if (problemsData) setProblems(problemsData)
@@ -222,6 +226,36 @@ function MockMate() {
   const streak = getStreak(problems, goal)
   const todayCount = getTodayCount(problems)
 
+  useEffect(() => {
+    if (settings.best_streak >= streak) return
+    const updateBest = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data } = await supabase.from('mockmate_settings').upsert({
+        user_id: user.id,
+        failed_interval: settings.failed_interval,
+        revisiting_interval: settings.revisiting_interval,
+        mastered_interval: settings.mastered_interval,
+        preferred_language: settings.preferred_language,
+        best_streak: streak,
+      }, { onConflict: 'user_id' }).select().single()
+
+      if (data) setSettings(data)
+    }
+    updateBest()
+  }, [streak, settings])
+
+  useEffect(() => {
+    if (handledProblemLink.current) return
+    const id = searchParams.get('problem')
+    if (!id) return
+    const found = problems.find(p => p.id === id)
+    if (!found) return
+    handledProblemLink.current = true
+    setEditingProblem(found)
+  }, [problems, searchParams])
+
   if (reviewProblems) {
     return (
       <FlashcardReview
@@ -243,6 +277,7 @@ function MockMate() {
           <div className="mm-topbar-left">
             <div className="mm-streak">
               🔥 <span className="mm-streak-count">{streak}</span> day streak
+              <span className="mm-best-streak">🏆 Best: {settings.best_streak}</span>
             </div>
           </div>
           <div className="mm-topbar-actions">
@@ -287,7 +322,7 @@ function MockMate() {
                 />
               ))}
               {dueProblems.length > 3 && (
-                <p className="mm-empty">+{dueProblems.length - 3} more due problems</p>
+                <p className="mm-empty mm-empty-inline">+{dueProblems.length - 3} more due problems</p>
               )}
             </div>
           </div>
@@ -379,7 +414,7 @@ function MockMate() {
           <br />
           <div className="problem-list">
             {getSortedFilteredProblems().length === 0 ? (
-              <p className="mm-empty">No problems found. Log your first problem!</p>
+              <p className="mm-empty mm-empty-state">No problems found. Log your first problem!</p>
             ) : (
               getSortedFilteredProblems().map(p => (
                 <ProblemCard

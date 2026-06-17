@@ -4,14 +4,17 @@ import {getLastSeen} from './utils.ts'
 
 interface Props {
   bug: Bug
+  expanded: boolean
+  onToggleExpand: () => void
   onEdit: (bug: Bug) => void
   onDelete: (id: string) => void
   onSawAgain: (id: string) => void
+  relatedBugs: Array<{ id: string; title: string }>
+  onNavigateToBug: (id: string) => void
 }
 
-function BugCard({ bug, onEdit, onDelete, onSawAgain }: Props) {
+function BugCard({ bug, expanded, onToggleExpand, onEdit, onDelete, onSawAgain, relatedBugs, onNavigateToBug }: Props) {
   const [copied, setCopied] = useState(false)
-  const [expanded, setExpanded] = useState(false)
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -22,8 +25,8 @@ function BugCard({ bug, onEdit, onDelete, onSawAgain }: Props) {
   }
 
   return (
-    <div className={`bug-card ${expanded ? 'expanded' : ''}`}>
-      <div className="bug-card-header" onClick={() => setExpanded(!expanded)}>
+    <div id={`bug-${bug.id}`} className={`bug-card ${expanded ? 'expanded' : ''}`}>
+      <div className="bug-card-header" onClick={onToggleExpand}>
         <div className="bug-card-title">
           <span className="bug-expand-icon">{expanded ? '▼' : '▶'}</span>
           <span className="bug-title">{bug.title}</span>
@@ -78,6 +81,23 @@ function BugCard({ bug, onEdit, onDelete, onSawAgain }: Props) {
               {bug.tags.map(tag => (
                 <span key={tag} className="problem-tag">#{tag}</span>
               ))}
+            </div>
+          )}
+
+          {relatedBugs.length > 0 && (
+            <div className="bug-related">
+              <span className="bug-related-label">Related:</span>
+              <div className="bug-related-list">
+                {relatedBugs.map(b => (
+                  <button
+                    key={b.id}
+                    className="bug-related-link"
+                    onClick={(e) => { e.stopPropagation(); onNavigateToBug(b.id) }}
+                  >
+                    {b.title}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

@@ -7,9 +7,10 @@ interface Props {
   onClose: () => void
   onSave: (bug: Partial<Bug>) => void
   editBug?: Bug | null
+  allBugs: Bug[]
 }
 
-function BugModal({ onClose, onSave, editBug }: Props) {
+function BugModal({ onClose, onSave, editBug, allBugs }: Props) {
   const [title, setTitle] = useState(editBug?.title || '')
   const [errorMessage, setErrorMessage] = useState(editBug?.error_message || '')
   const [language, setLanguage] = useState(editBug?.language || '')
@@ -18,15 +19,14 @@ function BugModal({ onClose, onSave, editBug }: Props) {
   const [codeSnippet, setCodeSnippet] = useState(editBug?.code_snippet || '')
   const [codeLanguage, setCodeLanguage] = useState(editBug?.code_language || 'JavaScript')
   const [tagInput, setTagInput] = useState(editBug?.tags?.join(', ') || '')
+  const [relatedBugIds, setRelatedBugIds] = useState<string[]>(editBug?.related_bug_ids || [])
   const [activeTab, setActiveTab] = useState<'details' | 'fix' | 'code'>('details')
   const [autoDetected, setAutoDetected] = useState(false)
 
   const handleErrorChange = (value: string) => {
     setErrorMessage(value)
-    console.log('Current language:', language, 'autoDetected:', autoDetected)
     if (!language || autoDetected) {
       const detected = detectLanguage(value)
-      console.log('Detected:', detected)
       if (detected) {
         setLanguage(detected)
         setAutoDetected(true)
@@ -46,6 +46,7 @@ function BugModal({ onClose, onSave, editBug }: Props) {
       code_snippet: codeSnippet || null,
       code_language: codeLanguage,
       tags,
+      related_bug_ids: relatedBugIds,
     })
   }
 
@@ -102,6 +103,23 @@ function BugModal({ onClose, onSave, editBug }: Props) {
               onChange={e => setTagInput(e.target.value)}
               className="mm-input"
             />
+
+            <label className="mm-settings-label">Related Bugs</label>
+            <select
+              className="mm-select"
+              multiple
+              value={relatedBugIds}
+              onChange={e => {
+                const values = Array.from(e.target.selectedOptions).map(o => o.value)
+                setRelatedBugIds(values)
+              }}
+            >
+              {allBugs
+                .filter(b => b.id !== editBug?.id)
+                .map(b => (
+                  <option key={b.id} value={b.id}>{b.title}</option>
+                ))}
+            </select>
           </div>
         )}
 

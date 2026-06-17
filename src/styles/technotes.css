@@ -11,20 +11,21 @@
 .tn-category-sidebar {
   width: 220px;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 1rem;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
   height: fit-content;
+  box-shadow: var(--shadow-sm);
 }
 
 .tn-category-sidebar h2 {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted-2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
@@ -35,16 +36,17 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.6rem 0.75rem;
-  border-radius: 0.6rem;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 0.85rem;
-  color: #6b7280;
-  transition: all 0.2s ease;
+  color: var(--muted-2);
+  transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) ease, color var(--dur-2) ease;
 }
 
 .tn-category-item:hover {
   background: rgba(255, 255, 255, 0.04);
-  color: #e5e7eb;
+  color: var(--text-2);
+  transform: translateY(-1px);
 }
 
 .tn-category-item.active {
@@ -54,7 +56,7 @@
 
 .tn-category-count {
   font-size: 0.72rem;
-  color: #4b5563;
+  color: var(--muted-3);
 }
 
 /* ── Main Area ── */
@@ -74,33 +76,36 @@
 .tn-main-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #f9fafb;
+  color: var(--text);
+  letter-spacing: -0.01em;
 }
 
 /* ── Notes Grid ── */
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: 1.05rem;
 }
 
 /* ── Note Card ── */
 .note-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 1rem;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) ease, border-color var(--dur-2) ease, background-color var(--dur-2) ease;
 }
 
 .note-card:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .note-pinned {
@@ -124,7 +129,7 @@
 .note-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--text);
 }
 
 .note-category {
@@ -145,7 +150,7 @@
 
 .note-preview {
   font-size: 0.82rem;
-  color: #9ca3af;
+  color: var(--muted);
   line-height: 1.6;
 }
 
@@ -154,7 +159,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: 0.75rem;
-  color: #4b5563;
+  color: var(--muted-3);
   padding-top: 0.4rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -173,21 +178,24 @@
 }
 
 .tn-recent-item {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 0.75rem;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
   padding: 0.75rem 1rem;
   cursor: pointer;
   white-space: nowrap;
   font-size: 0.82rem;
-  color: #d1d5db;
-  transition: all 0.2s ease;
+  color: var(--text-2);
+  transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) ease, border-color var(--dur-2) ease, color var(--dur-2) ease;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .tn-recent-item:hover {
   background: rgba(255, 255, 255, 0.06);
-  color: #f9fafb;
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
 }
 
 /* ── Editor Page ── */
@@ -209,17 +217,24 @@
 
 .tn-editor-back {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #6b7280;
+  border: 1px solid var(--border);
+  color: var(--muted-2);
   padding: 0.5rem 1rem;
-  border-radius: 0.6rem;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 0.8rem;
-  transition: all 0.2s ease;
+  transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2) ease, background-color var(--dur-2) ease, color var(--dur-2) ease;
 }
 
 .tn-editor-back:hover {
-  color: #e5e7eb;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.tn-editor-back:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .tn-editor-actions {
@@ -230,19 +245,19 @@
 
 .tn-save-status {
   font-size: 0.75rem;
-  color: #4b5563;
+  color: var(--muted-3);
 }
 
 .tn-toggle-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #6b7280;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--muted-2);
   padding: 0.55rem 1rem;
-  border-radius: 0.6rem;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2) ease, background-color var(--dur-2) ease, color var(--dur-2) ease;
 }
 
 .tn-toggle-btn.active {
@@ -254,15 +269,16 @@
 .tn-editor-title-input {
   background: transparent;
   border: none;
-  color: #f9fafb;
+  color: var(--text);
   font-size: 1.75rem;
   font-weight: 800;
   outline: none;
   padding: 0;
+  letter-spacing: -0.02em;
 }
 
 .tn-editor-title-input::placeholder {
-  color: #374151;
+  color: var(--muted-4);
 }
 
 .tn-editor-meta {
@@ -273,10 +289,10 @@
 
 .tn-editor-textarea {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 0.75rem;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
   padding: 1.25rem;
-  color: #e5e7eb;
+  color: var(--text-2);
   font-size: 0.9rem;
   font-family: 'Fira Code', 'Courier New', monospace;
   line-height: 1.7;
@@ -284,25 +300,29 @@
   resize: vertical;
   min-height: 500px;
   width: 100%;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-2) ease, box-shadow var(--dur-2) ease, background-color var(--dur-2) ease;
 }
 
 .tn-editor-textarea:focus {
-  border-color: rgba(167, 139, 250, 0.3);
+  border-color: rgba(167, 139, 250, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 .tn-preview {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 0.75rem;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   min-height: 500px;
-  color: #d1d5db;
+  color: var(--text-2);
   font-size: 0.9rem;
   line-height: 1.75;
+  box-shadow: var(--shadow-sm);
 }
 
 .tn-preview h1, .tn-preview h2, .tn-preview h3 {
-  color: #f9fafb;
+  color: var(--text);
   margin: 1.25rem 0 0.5rem;
 }
 
@@ -345,7 +365,7 @@
 .tn-preview blockquote {
   border-left: 3px solid rgba(167, 139, 250, 0.4);
   padding-left: 1rem;
-  color: #9ca3af;
+  color: var(--muted);
   margin: 0.75rem 0;
 }
 
@@ -411,4 +431,63 @@
 
 .note-type-badge {
   font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .technotes-page {
+    flex-direction: column;
+  }
+
+  .tn-category-sidebar {
+    width: 100%;
+  }
+
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Wiki-links ([[Note Title]] syntax) ── */
+.tn-wiki-link {
+  display: inline;
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  color: #a78bfa;
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  transition: background-color var(--dur-2) ease, border-color var(--dur-2) ease, transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) ease;
+  vertical-align: baseline;
+}
+
+.tn-wiki-link:hover {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: rgba(167, 139, 250, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(167, 139, 250, 0.18);
+}
+
+.tn-wiki-link:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Unresolved wiki-link (note title not found) */
+.tn-wiki-link--missing {
+  background: rgba(248, 113, 113, 0.07);
+  border-color: rgba(248, 113, 113, 0.25);
+  color: #f87171;
+  cursor: default;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.tn-wiki-link--missing:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.35);
+  transform: none;
+  box-shadow: none;
 }

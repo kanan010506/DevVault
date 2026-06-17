@@ -9,8 +9,9 @@
 .dashboard-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #f9fafb;
+  color: var(--text);
   margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
 }
 
 .dashboard-title span {
@@ -21,28 +22,67 @@
 }
 
 .dashboard-subtitle {
-  color: #6b7280;
+  color: var(--muted-2);
   font-size: 0.95rem;
 }
 
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 1.15rem;
+}
+
+.dashboard-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-xl);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  color: var(--text-2);
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn var(--dur-3) var(--ease-out);
+}
+
+.dashboard-banner-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-2);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2) ease, background-color var(--dur-2) ease, color var(--dur-2) ease;
+  white-space: nowrap;
+}
+
+.dashboard-banner-btn:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-banner-btn:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .tool-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 1rem;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
   padding: 1.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: all 0.2s ease;
+  transition: transform var(--dur-3) var(--ease-out), box-shadow var(--dur-3) var(--ease-out), border-color var(--dur-2) ease, background-color var(--dur-2) ease;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .tool-card::before {
@@ -56,43 +96,82 @@
   opacity: 0.6;
 }
 
+.tool-card::after {
+  content: '';
+  position: absolute;
+  inset: -40% -30%;
+  background:
+    radial-gradient(circle at 30% 30%, var(--accent), transparent 58%),
+    radial-gradient(circle at 75% 70%, rgba(59, 130, 246, 0.12), transparent 55%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-3) ease;
+}
+
 .tool-card:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.tool-card:hover::after {
+  opacity: 0.14;
+}
+
+.tool-card:active {
+  transform: translateY(-1px) scale(0.99);
 }
 
 .tool-icon {
   font-size: 2rem;
   flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .tool-info {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .tool-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--text);
   margin-bottom: 0.25rem;
 }
 
 .tool-desc {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--muted-2);
   line-height: 1.5;
 }
 
+.tool-stat {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
 .tool-arrow {
-  color: #374151;
+  color: var(--muted-4);
   font-size: 1.1rem;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-2) var(--ease-out), color var(--dur-2) ease;
+  position: relative;
+  z-index: 1;
 }
 
 .tool-card:hover .tool-arrow {
   transform: translateX(4px);
-  color: #6b7280;
+  color: var(--muted-2);
 }
 
 .dashboard-user {
@@ -107,4 +186,16 @@
   height: 56px;
   border-radius: 50%;
   border: 2px solid rgba(167, 139, 250, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 800px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

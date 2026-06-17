@@ -67,6 +67,7 @@ export interface MockMateSettings {
   revisiting_interval: number
   mastered_interval: number
   preferred_language: string
+  best_streak: number
 }
 
 export interface Problem {

@@ -136,7 +136,7 @@ function TechNotes() {
 
           <div className="notes-grid">
             {filteredNotes.length === 0 ? (
-              <p className="mm-empty">
+              <p className="mm-empty mm-empty-state">
                 {notes.length === 0 ? 'No notes yet. Create your first note!' : 'No notes match your search.'}
               </p>
             ) : (

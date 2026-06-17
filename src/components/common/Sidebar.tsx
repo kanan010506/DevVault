@@ -11,7 +11,11 @@ const navItems = [
   { label: 'SprintBoard', path: '/sprintboard', icon: '🚀' },
 ]
 
-function Sidebar() {
+interface Props {
+  onOpenSearch?: () => void
+}
+
+function Sidebar({ onOpenSearch }: Props) {
   const [expanded, setExpanded] = useState(false)
   const navigate = useNavigate()
 
@@ -29,6 +33,16 @@ function Sidebar() {
       {expanded && <div className="sidebar-logo">DevVault</div>}
 
       <nav className="sidebar-nav">
+        {onOpenSearch && (
+          <button
+            className="sidebar-link sidebar-link-btn"
+            onClick={onOpenSearch}
+            title="Search (⌘/Ctrl + K)"
+          >
+            <span className="sidebar-icon">🔎</span>
+            {expanded && <span className="sidebar-label">Search</span>}
+          </button>
+        )}
         {navItems.map(item => (
           <NavLink
             key={item.path}

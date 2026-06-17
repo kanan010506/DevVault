@@ -1,20 +1,34 @@
 .layout {
   display: flex;
   min-height: 100vh;
-  background: #080818;
+  background: var(--bg-0);
 }
 
 .layout-main {
   margin-left: 64px;
   flex: 1;
-  padding: 2.5rem;
+  padding: 2.75rem 2.75rem 3rem;
   animation: fadeIn 0.3s ease;
-  transition: margin-left 0.25s ease;
+  transition: margin-left var(--dur-3) var(--ease-out);
   display: flex;
   justify-content: center;
+}
+
+.sidebar.expanded + .layout-main {
+  margin-left: 220px;
+}
+
+.layout-main > * {
+  width: 100%;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .layout-main {
+    padding: 2rem 1.25rem 2.25rem;
+  }
 }
