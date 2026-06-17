@@ -2,6 +2,8 @@
 
 **Your private second brain for developers.**
 
+🔗 **Live Demo:** [dev-vault-ashen.vercel.app](https://dev-vault-ashen.vercel.app)
+
 DevVault is a self-contained, full-stack productivity portal built for personal use — combining project management, interview preparation, bug tracking, and technical note-taking into a single private workspace. No external APIs, no third-party data sharing. Everything you log stays yours.
 
 ---
